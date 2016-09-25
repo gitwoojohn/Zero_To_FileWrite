@@ -3,6 +3,7 @@ using System.Collections.Generic;
 using System.Diagnostics;
 using System.IO;
 using System.IO.MemoryMappedFiles;
+using System.Runtime.InteropServices;
 using System.Threading;
 using System.Threading.Tasks;
 using System.Windows.Forms;
@@ -67,6 +68,33 @@ namespace FileContentDelete
             }
         }
 
+        private void BinaryFileWrite( string filePath )
+        {
+            const int blockSize = 1024 * 8;
+            long count = 0;
+
+            using( FileStream streamWrite = File.OpenWrite( filePath ) )
+            {
+                count = streamWrite.Length / blockSize;
+                //Debug.Write( streamWrite.Length );
+            }
+
+            byte[] data = new byte[ blockSize ];
+            //Random rng = new Random();
+            using( FileStream streamWrite = File.OpenWrite( filePath ) )
+            //using( StreamWriter streamWriter = new StreamWriter( filePath ) )
+            {
+                // There 
+                for( int i = 0; i < count; i++ )
+                {
+                    //rng.NextBytes( data );
+                    //streamWrite.BaseStream.Write( data, 0, data.Length );
+                    streamWrite.Write( data, 0, data.Length );
+
+                }
+            }
+        }
+
         private void ByteArrayToFile( string _FileName )
         {
             using( FileStream _FileStream = new FileStream( _FileName, FileMode.Open, FileAccess.Write ) )
@@ -114,16 +142,40 @@ namespace FileContentDelete
                     //string result = ( sw.ElapsedMilliseconds / 1000 ).ToString();
                     //MessageBox.Show( result );
 
-                    //_FileStream.Close();
+                    _FileStream.Close();
                     //_FileStream = new FileStream( _FileName, FileMode.Create );
 
-                    MemoryMappedFile mmf = MemoryMappedFile.CreateFromFile( _FileName );
-                    MemoryMappedViewStream mms = mmf.CreateViewStream();
-                    using( BinaryReader b = new BinaryReader( mms ) )
-                    {
+                    //MemoryMappedFile mmf = MemoryMappedFile.CreateFromFile( _FileName );
+                    //MemoryMappedViewStream mms = mmf.CreateViewStream();
+                    //using( BinaryReader b = new BinaryReader( mms ) )
+                    //{
 
-                    }
+                    //}
 
+
+                    // MemoryMappingFile 방식 
+                    //byte[] _ByteArray = new byte[ _FileStream.Length ];
+                    //int i = 0;
+
+                    //double c = _FileStream.Length / 500000000;
+                    //double quotient = Math.Truncate( c );
+
+
+                    //for( ; i < quotient; i++ )
+                    //{
+                    //    //_FileStream.Write( _ByteArray, i * 500000000, 500000000 );
+
+                    //    MemoryMappingFile( _FileName, 1, 1 );
+                    //    Thread.Sleep( 10 );
+                    //}
+
+                    //long Last_Position = Convert.ToInt32( _FileStream.Length % 500000000 );
+                    ////_FileStream.Write( _ByteArray, ( ( i - 1 ) * 500000000 ), Last_ByteArray );
+
+                    //MemoryMappingFile( _FileName, ( i - 1 ) * 500000000, Last_Position );
+
+
+                    BinaryFileWrite( _FileName );
                 }
             };
         }
@@ -195,6 +247,48 @@ namespace FileContentDelete
 
                 // 리스트 뷰에 아이템 입력
                 listView.Items.Add( item );
+            }
+        }
+
+        private void MemoryMappingFile( string filePath, long startPosition, long endPosition )
+        {
+            long offset = 0; //0x00000000 * startPosition; // offset 0
+            long length = 1024; //0x20000000 * endPosition; // 512 megabytes
+
+            // Create the memory-mapped file.
+            using( var mmf = MemoryMappedFile.CreateFromFile( filePath, FileMode.Open, "ImgA" ) )
+            {
+                // Create a random access view, from the 256th megabyte (the offset)
+                // to the 768th megabyte (the offset plus length).
+                using( var accessor = mmf.CreateViewAccessor( offset, length ) )
+                {
+                    int colorSize = Marshal.SizeOf( typeof( MyColor ) );
+                    MyColor color;
+
+                    // Make changes to the view.
+                    for( long i = 0; i < length; i += colorSize )
+                    {
+                        accessor.Read( i, out color );
+                        color.Brighten( 10 );
+                        accessor.Write( i, ref color );
+                    }
+                }
+            }
+        }
+        public struct MyColor
+        {
+            public short Red;
+            public short Green;
+            public short Blue;
+            public short Alpha;
+
+            // Make the view brighter.
+            public void Brighten( short value )
+            {
+                Red = ( short )Math.Min( short.MaxValue, Red + value );
+                Green = ( short )Math.Min( short.MaxValue, Green + value );
+                Blue = ( short )Math.Min( short.MaxValue, Blue + value );
+                Alpha = ( short )Math.Min( short.MaxValue, Alpha + value );
             }
         }
     }
