@@ -40,25 +40,9 @@ namespace FileContentDelete
             if( dr == DialogResult.OK )
             {
                 ListView_AddFile( openFileDialog.FileNames );
-                //foreach( string itemFile in openFileDialog.FileNames )
-                //{
-                //    // 리스트 뷰의 각 아이템
-                //    ListViewItem item = new ListViewItem( itemFile );
-
-                //    // 파일의 크기
-                //    using( FileStream fs = new FileStream( itemFile, FileMode.Open ) )
-                //    {
-                //        string fileSize = ( fs.Length / 1024 ).ToString( "#,#" );
-                //        item.SubItems.Add( fileSize );
-                //    };
-
-                //    // 리스트 뷰에 아이템 입력
-                //    listView.Items.Add( item );
-                //}
             }
         }
 
-        // 비동기 TAP(Task Asynchronous Pattern) 방식으로 파일 처리
         private void btnErase_Click( object sender, EventArgs e )
         {
             // 선택한 파일 삭제
@@ -71,26 +55,22 @@ namespace FileContentDelete
         private void BinaryFileWrite( string filePath )
         {
             const int blockSize = 1024 * 8;
+            byte[] data = new byte[ blockSize ];
             long count = 0;
 
             using( FileStream streamWrite = File.OpenWrite( filePath ) )
             {
                 count = streamWrite.Length / blockSize;
-                //Debug.Write( streamWrite.Length );
-            }
 
-            byte[] data = new byte[ blockSize ];
-            //Random rng = new Random();
-            using( FileStream streamWrite = File.OpenWrite( filePath ) )
-            //using( StreamWriter streamWriter = new StreamWriter( filePath ) )
-            {
-                // There 
                 for( int i = 0; i < count; i++ )
                 {
-                    //rng.NextBytes( data );
-                    //streamWrite.BaseStream.Write( data, 0, data.Length );
                     streamWrite.Write( data, 0, data.Length );
+                }
 
+                if( streamWrite.Length > count * 8192 )
+                {
+                    byte[] Last_Data = new byte[ streamWrite.Length - ( count * 8192 ) ];
+                    streamWrite.Write( Last_Data, 0, Last_Data.Length );
                 }
             }
         }
@@ -103,22 +83,24 @@ namespace FileContentDelete
                 {
                     byte[] _ByteArray = new byte[ _FileStream.Length ];
 
-                    int i = 0;
+                    //int i = 0;
 
-                    if( _FileStream.Length >= 500000000 )
+                    if( _FileStream.Length > 50000000 ) /*( _FileStream.Length >= 500000000 )*/
                     {
-                        double c = _FileStream.Length / 500000000;
-                        double quotient = Math.Truncate( c );
+                        _FileStream.Close();
+                        BinaryFileWrite( _FileName );
+                        //double c = _FileStream.Length / 500000000;
+                        //double quotient = Math.Truncate( c );
 
 
-                        for( ; i < quotient; i++ )
-                        {
-                            _FileStream.Write( _ByteArray, i * 500000000, 500000000 );
-                            Thread.Sleep( 10 );
-                        }
+                        //for( ; i < quotient; i++ )
+                        //{
+                        //    _FileStream.Write( _ByteArray, i * 500000000, 500000000 );
+                        //    Thread.Sleep( 10 );
+                        //}
 
-                        int Last_ByteArray = Convert.ToInt32( _FileStream.Length % 500000000 );
-                        _FileStream.Write( _ByteArray, ( ( i - 1 ) * 500000000 ), Last_ByteArray );
+                        //int Last_ByteArray = Convert.ToInt32( _FileStream.Length % 500000000 );
+                        //_FileStream.Write( _ByteArray, ( ( i - 1 ) * 500000000 ), Last_ByteArray );
                     }
                     else
                     {
@@ -126,9 +108,9 @@ namespace FileContentDelete
                         _FileStream.Write( _ByteArray, 0, _ByteArray.Length );
                     }
                 }
-                catch( Exception )
+                catch( Exception e )
                 {
-                    //MessageBox.Show( e.ToString() );
+                    MessageBox.Show( e.ToString() );
 
                     // 방법 1 파일 길이에 따른 처리 시간 너무 길어짐
                     //Stopwatch sw = new Stopwatch();
@@ -142,7 +124,7 @@ namespace FileContentDelete
                     //string result = ( sw.ElapsedMilliseconds / 1000 ).ToString();
                     //MessageBox.Show( result );
 
-                    _FileStream.Close();
+                    //_FileStream.Close();
                     //_FileStream = new FileStream( _FileName, FileMode.Create );
 
                     //MemoryMappedFile mmf = MemoryMappedFile.CreateFromFile( _FileName );
@@ -175,7 +157,7 @@ namespace FileContentDelete
                     //MemoryMappingFile( _FileName, ( i - 1 ) * 500000000, Last_Position );
 
 
-                    BinaryFileWrite( _FileName );
+                    //BinaryFileWrite( _FileName );
                 }
             };
         }
@@ -212,23 +194,6 @@ namespace FileContentDelete
             string[] files = ( string[] )e.Data.GetData( DataFormats.FileDrop );
 
             ListView_AddFile( files );
-
-            //foreach( string file in files )
-            //{
-
-            //    // 리스트 뷰의 각 아이템
-            //    ListViewItem item = new ListViewItem( file );
-
-            //    // 파일의 크기
-            //    using( FileStream fs = new FileStream( file, FileMode.Open ) )
-            //    {
-            //        string fileSize = ( fs.Length / 1024 ).ToString( "#,#" );
-            //        item.SubItems.Add( fileSize );
-            //    };
-
-            //    // 리스트 뷰에 아이템 입력
-            //    listView.Items.Add( item );
-            //}
         }
 
         private void ListView_AddFile( string[] files )
