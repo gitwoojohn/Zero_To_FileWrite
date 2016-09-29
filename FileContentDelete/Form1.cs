@@ -43,18 +43,28 @@ namespace FileContentDelete
             }
         }
 
-        private void btnErase_Click( object sender, EventArgs e )
+        private async void btnErase_Click( object sender, EventArgs e )
         {
+            long length = 0; //new FileInfo( filePath ).Length;
+
             // 선택한 파일 삭제
             for( int i = 0; i < listView.Items.Count; i++ )
             {
-                ByteArrayToFile( listView.Items[ i ].Text );
+                length = new FileInfo( listView.Items[ i ].Text ).Length;
+                if(  length <= 50000000 )
+                {
+                    await ByteArrayToFile( listView.Items[ i ].Text );
+                }
+                else
+                {
+                    await BinaryFileWrite( listView.Items[ i ].Text );
+                }
             }
         }
 
-        private void BinaryFileWrite( string filePath )
+        private async Task BinaryFileWrite( string filePath )
         {
-            const int blockSize = 1024 * 8;
+            const int blockSize = 1024 * 16; //8;
             byte[] data = new byte[ blockSize ];
             long count = 0;
 
@@ -64,100 +74,32 @@ namespace FileContentDelete
 
                 for( int i = 0; i < count; i++ )
                 {
-                    streamWrite.Write( data, 0, data.Length );
+                    await streamWrite.WriteAsync( data, 0, data.Length );
                 }
 
-                if( streamWrite.Length > count * 8192 )
+                if( streamWrite.Length > count * blockSize )
                 {
-                    byte[] Last_Data = new byte[ streamWrite.Length - ( count * 8192 ) ];
-                    streamWrite.Write( Last_Data, 0, Last_Data.Length );
+                    byte[] Last_Data = new byte[ streamWrite.Length - ( count * blockSize ) ];
+                    await streamWrite.WriteAsync( Last_Data, 0, Last_Data.Length );
                 }
             }
         }
 
-        private void ByteArrayToFile( string _FileName )
+        private async Task ByteArrayToFile( string _FileName )
         {
             using( FileStream _FileStream = new FileStream( _FileName, FileMode.Open, FileAccess.Write ) )
             {
                 try
                 {
                     byte[] _ByteArray = new byte[ _FileStream.Length ];
-
-                    //int i = 0;
-
-                    if( _FileStream.Length > 50000000 ) /*( _FileStream.Length >= 500000000 )*/
-                    {
-                        _FileStream.Close();
-                        BinaryFileWrite( _FileName );
-                        //double c = _FileStream.Length / 500000000;
-                        //double quotient = Math.Truncate( c );
-
-
-                        //for( ; i < quotient; i++ )
-                        //{
-                        //    _FileStream.Write( _ByteArray, i * 500000000, 500000000 );
-                        //    Thread.Sleep( 10 );
-                        //}
-
-                        //int Last_ByteArray = Convert.ToInt32( _FileStream.Length % 500000000 );
-                        //_FileStream.Write( _ByteArray, ( ( i - 1 ) * 500000000 ), Last_ByteArray );
-                    }
-                    else
-                    {
-                        // 바이트 블록 단위로 파일 쓰기( 바이트 블록, 시작 위치, Write Size )
-                        _FileStream.Write( _ByteArray, 0, _ByteArray.Length );
-                    }
+       
+                    // 바이트 블록 단위로 파일 쓰기( 바이트 블록, 시작 위치, Write Size )
+                    await _FileStream.WriteAsync( _ByteArray, 0, _ByteArray.Length );
+                    
                 }
                 catch( Exception e )
                 {
                     MessageBox.Show( e.ToString() );
-
-                    // 방법 1 파일 길이에 따른 처리 시간 너무 길어짐
-                    //Stopwatch sw = new Stopwatch();
-                    //sw.Start();
-                    //for( int i = 0; i < _FileStream.Length; i++ )
-                    //{
-                    //    Thread.Sleep( 10 );
-                    //    _FileStream.WriteByte( 0x00 );
-                    //}
-                    //sw.Stop();
-                    //string result = ( sw.ElapsedMilliseconds / 1000 ).ToString();
-                    //MessageBox.Show( result );
-
-                    //_FileStream.Close();
-                    //_FileStream = new FileStream( _FileName, FileMode.Create );
-
-                    //MemoryMappedFile mmf = MemoryMappedFile.CreateFromFile( _FileName );
-                    //MemoryMappedViewStream mms = mmf.CreateViewStream();
-                    //using( BinaryReader b = new BinaryReader( mms ) )
-                    //{
-
-                    //}
-
-
-                    // MemoryMappingFile 방식 
-                    //byte[] _ByteArray = new byte[ _FileStream.Length ];
-                    //int i = 0;
-
-                    //double c = _FileStream.Length / 500000000;
-                    //double quotient = Math.Truncate( c );
-
-
-                    //for( ; i < quotient; i++ )
-                    //{
-                    //    //_FileStream.Write( _ByteArray, i * 500000000, 500000000 );
-
-                    //    MemoryMappingFile( _FileName, 1, 1 );
-                    //    Thread.Sleep( 10 );
-                    //}
-
-                    //long Last_Position = Convert.ToInt32( _FileStream.Length % 500000000 );
-                    ////_FileStream.Write( _ByteArray, ( ( i - 1 ) * 500000000 ), Last_ByteArray );
-
-                    //MemoryMappingFile( _FileName, ( i - 1 ) * 500000000, Last_Position );
-
-
-                    //BinaryFileWrite( _FileName );
                 }
             };
         }
@@ -217,6 +159,14 @@ namespace FileContentDelete
 
         private void MemoryMappingFile( string filePath, long startPosition, long endPosition )
         {
+            //MemoryMappedFile mmf = MemoryMappedFile.CreateFromFile( _FileName );
+            //MemoryMappedViewStream mms = mmf.CreateViewStream();
+            //using( BinaryReader b = new BinaryReader( mms ) )
+            //{
+
+            //}
+
+
             long offset = 0; //0x00000000 * startPosition; // offset 0
             long length = 1024; //0x20000000 * endPosition; // 512 megabytes
 

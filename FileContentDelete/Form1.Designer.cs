@@ -30,8 +30,8 @@
         {
             this.groupBox1 = new System.Windows.Forms.GroupBox();
             this.listView = new System.Windows.Forms.ListView();
-            this.FileList = new System.Windows.Forms.ColumnHeader();
-            this.Size = new System.Windows.Forms.ColumnHeader();
+            this.FileList = ( ( System.Windows.Forms.ColumnHeader )( new System.Windows.Forms.ColumnHeader() ) );
+            this.Size = ( ( System.Windows.Forms.ColumnHeader )( new System.Windows.Forms.ColumnHeader() ) );
             this.btnFileSelect = new System.Windows.Forms.Button();
             this.openFileDialog = new System.Windows.Forms.OpenFileDialog();
             this.btnErase = new System.Windows.Forms.Button();
@@ -41,32 +41,32 @@
             // 
             // groupBox1
             // 
-            this.groupBox1.Controls.Add(this.listView);
-            this.groupBox1.Font = new System.Drawing.Font("맑은 고딕", 9.75F, System.Drawing.FontStyle.Bold, System.Drawing.GraphicsUnit.Point, ((byte)(129)));
-            this.groupBox1.Location = new System.Drawing.Point(13, 12);
+            this.groupBox1.Controls.Add( this.listView );
+            this.groupBox1.Font = new System.Drawing.Font( "맑은 고딕", 9.75F, System.Drawing.FontStyle.Bold, System.Drawing.GraphicsUnit.Point, ( ( byte )( 129 ) ) );
+            this.groupBox1.Location = new System.Drawing.Point( 13, 12 );
             this.groupBox1.Name = "groupBox1";
-            this.groupBox1.Size = new System.Drawing.Size(409, 257);
+            this.groupBox1.Size = new System.Drawing.Size( 409, 257 );
             this.groupBox1.TabIndex = 1;
             this.groupBox1.TabStop = false;
             this.groupBox1.Text = "선택 파일 목록";
             // 
             // listView
             // 
-            this.listView.Columns.AddRange(new System.Windows.Forms.ColumnHeader[] {
+            this.listView.AllowDrop = true;
+            this.listView.Columns.AddRange( new System.Windows.Forms.ColumnHeader[] {
             this.FileList,
-            this.Size});
+            this.Size} );
             this.listView.HeaderStyle = System.Windows.Forms.ColumnHeaderStyle.Nonclickable;
-            this.listView.Location = new System.Drawing.Point(7, 24);
+            this.listView.Location = new System.Drawing.Point( 7, 24 );
             this.listView.MultiSelect = false;
             this.listView.Name = "listView";
             this.listView.Scrollable = false;
-            this.listView.Size = new System.Drawing.Size(396, 227);
+            this.listView.Size = new System.Drawing.Size( 396, 227 );
             this.listView.TabIndex = 0;
             this.listView.UseCompatibleStateImageBehavior = false;
             this.listView.View = System.Windows.Forms.View.Details;
-            this.listView.AllowDrop = true;
-            this.listView.DragDrop += new System.Windows.Forms.DragEventHandler(this.listView_DragDrop);
-            this.listView.DragEnter += new System.Windows.Forms.DragEventHandler(this.listView_DragEnter);            
+            this.listView.DragDrop += new System.Windows.Forms.DragEventHandler( this.listView_DragDrop );
+            this.listView.DragEnter += new System.Windows.Forms.DragEventHandler( this.listView_DragEnter );
             // 
             // FileList
             // 
@@ -80,56 +80,52 @@
             // 
             // btnFileSelect
             // 
-            this.btnFileSelect.Font = new System.Drawing.Font("맑은 고딕", 9.75F, System.Drawing.FontStyle.Bold, System.Drawing.GraphicsUnit.Point, ((byte)(129)));
-            this.btnFileSelect.Location = new System.Drawing.Point(20, 279);
+            this.btnFileSelect.Font = new System.Drawing.Font( "맑은 고딕", 9.75F, System.Drawing.FontStyle.Bold, System.Drawing.GraphicsUnit.Point, ( ( byte )( 129 ) ) );
+            this.btnFileSelect.Location = new System.Drawing.Point( 20, 279 );
             this.btnFileSelect.Name = "btnFileSelect";
-            this.btnFileSelect.Size = new System.Drawing.Size(113, 34);
+            this.btnFileSelect.Size = new System.Drawing.Size( 113, 34 );
             this.btnFileSelect.TabIndex = 2;
             this.btnFileSelect.Text = "파일 선택";
             this.btnFileSelect.UseVisualStyleBackColor = true;
-            this.btnFileSelect.Click += new System.EventHandler(this.btnFileSelect_Click);
-            // 
-            // openFileDialog
-            // 
-            this.openFileDialog.FileName = "openFileDialog1";
+            this.btnFileSelect.Click += new System.EventHandler( this.btnFileSelect_Click );
             // 
             // btnErase
             // 
-            this.btnErase.Font = new System.Drawing.Font("맑은 고딕", 9.75F, System.Drawing.FontStyle.Bold, System.Drawing.GraphicsUnit.Point, ((byte)(129)));
-            this.btnErase.Location = new System.Drawing.Point(164, 279);
+            this.btnErase.Font = new System.Drawing.Font( "맑은 고딕", 9.75F, System.Drawing.FontStyle.Bold, System.Drawing.GraphicsUnit.Point, ( ( byte )( 129 ) ) );
+            this.btnErase.Location = new System.Drawing.Point( 164, 279 );
             this.btnErase.Name = "btnErase";
-            this.btnErase.Size = new System.Drawing.Size(113, 34);
+            this.btnErase.Size = new System.Drawing.Size( 113, 34 );
             this.btnErase.TabIndex = 3;
             this.btnErase.Text = "파일 삭제";
             this.btnErase.UseVisualStyleBackColor = true;
-            this.btnErase.Click += new System.EventHandler(this.btnErase_Click);
+            this.btnErase.Click += new System.EventHandler( this.btnErase_Click );
             // 
             // btnListBoxClear
             // 
-            this.btnListBoxClear.Font = new System.Drawing.Font("맑은 고딕", 9.75F, System.Drawing.FontStyle.Bold, System.Drawing.GraphicsUnit.Point, ((byte)(129)));
-            this.btnListBoxClear.Location = new System.Drawing.Point(308, 279);
+            this.btnListBoxClear.Font = new System.Drawing.Font( "맑은 고딕", 9.75F, System.Drawing.FontStyle.Bold, System.Drawing.GraphicsUnit.Point, ( ( byte )( 129 ) ) );
+            this.btnListBoxClear.Location = new System.Drawing.Point( 308, 279 );
             this.btnListBoxClear.Name = "btnListBoxClear";
-            this.btnListBoxClear.Size = new System.Drawing.Size(113, 34);
+            this.btnListBoxClear.Size = new System.Drawing.Size( 113, 34 );
             this.btnListBoxClear.TabIndex = 4;
             this.btnListBoxClear.Text = "목록 비우기";
             this.btnListBoxClear.UseVisualStyleBackColor = true;
-            this.btnListBoxClear.Click += new System.EventHandler(this.btnListBoxClear_Click);
+            this.btnListBoxClear.Click += new System.EventHandler( this.btnListBoxClear_Click );
             // 
             // Form1
             // 
-            this.AutoScaleDimensions = new System.Drawing.SizeF(7F, 12F);
+            this.AutoScaleDimensions = new System.Drawing.SizeF( 7F, 12F );
             this.AutoScaleMode = System.Windows.Forms.AutoScaleMode.Font;
             this.AutoSize = true;
-            this.ClientSize = new System.Drawing.Size(434, 323);
-            this.Controls.Add(this.btnListBoxClear);
-            this.Controls.Add(this.btnErase);
-            this.Controls.Add(this.btnFileSelect);
-            this.Controls.Add(this.groupBox1);
+            this.ClientSize = new System.Drawing.Size( 434, 323 );
+            this.Controls.Add( this.btnListBoxClear );
+            this.Controls.Add( this.btnErase );
+            this.Controls.Add( this.btnFileSelect );
+            this.Controls.Add( this.groupBox1 );
             this.Name = "Form1";
             this.SizeGripStyle = System.Windows.Forms.SizeGripStyle.Hide;
             this.Text = "File Content Erase";
-            this.groupBox1.ResumeLayout(false);
-            this.ResumeLayout(false);
+            this.groupBox1.ResumeLayout( false );
+            this.ResumeLayout( false );
 
         }
 

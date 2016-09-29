@@ -9,12 +9,13 @@ using System.Text;
 using System.Threading;
 using System.Threading.Tasks;
 
+
 namespace MemoryMappingFiles
 {
     class Program
     {
         // 1 GB
-        private static int fileSizeMb = 1050;
+        private static int fileSizeMb = 3072; // 1024;
         private static string filePath = @"C:\Temp\MemoryMappingDemo.bin";
 
         static void Main( string[] args )
@@ -41,7 +42,12 @@ namespace MemoryMappingFiles
             {
                 BinaryFileCreate();
             }
-            BinaryFileWrite();
+
+            //MemoryMappingFile_2( filePath );
+            MemoryMappingFile_3();
+
+
+            //BinaryFileWrite();
 
             //int i = 0, j = 1;
 
@@ -69,7 +75,7 @@ namespace MemoryMappingFiles
             const int blockSize = 1024 * 8;
             const int blocksPerMb = ( 1024 * 1024 ) / blockSize;
 
-           int count = fileSizeMb * blocksPerMb;
+            int count = fileSizeMb * blocksPerMb;
 
             byte[] data = new byte[ blockSize ];
             Random rng = new Random();
@@ -95,10 +101,10 @@ namespace MemoryMappingFiles
 
             using( FileStream streamWrite = File.OpenWrite( filePath ) )
             {
-                count = (int)streamWrite.Length / blockSize;
+                count = ( int )streamWrite.Length / blockSize;
                 //Debug.Write( streamWrite.Length );
             }
-            
+
 
             byte[] data = new byte[ blockSize ];
             Random rng = new Random();
@@ -116,6 +122,58 @@ namespace MemoryMappingFiles
             }
         }
 
+        private static void MemoryMappingFile_2( string filePath )
+        {
+            long length = new FileInfo( filePath ).Length;
+
+            // Create the memory-mapped file.
+            using( var mmf = MemoryMappedFile.CreateFromFile( filePath, FileMode.Open, "ImgA" ) )
+            {
+                // Create a random access view, from the 256th megabyte (the offset)
+                // to the 768th megabyte (the offset plus length).
+                using( var accessor = mmf.CreateViewAccessor() )
+                {
+                    int colorSize = Marshal.SizeOf( typeof( MyColor ) );
+                    MyColor color;
+
+                    // Make changes to the view.
+                    for( long i = 0; i < length; i += colorSize )
+                    {
+                        accessor.Read( i, out color );
+                        color.Brighten( 10 );
+                        accessor.Write( i, ref color );
+                    }
+                }
+            }
+        }
+
+        private static void MemoryMappingFile_3()
+        {
+            using( var memFile = MemFile( filePath ) )
+            using( var stream = memFile.CreateViewStream( 0L, 0L, MemoryMappedFileAccess.Read ) )
+            {
+                //do stuff with your stream
+            }
+        }
+        public static MemoryMappedFile MemFile( string filePath )
+        {
+            return MemoryMappedFile.CreateFromFile(
+                      //include a readonly shared stream
+                      File.Open( filePath, FileMode.Open, FileAccess.Read, FileShare.Read ),
+                      //not mapping to a name
+                      null,
+                      //use the file's actual size
+                      0L,
+                      //read only access
+                      MemoryMappedFileAccess.Read,
+                      //not configuring security
+                      null,
+                      //adjust as needed
+                      HandleInheritability.None,
+                      //close the previously passed in stream when done
+                      false );
+
+        }
 
         private static void MemoryMappingFile( string filePath, long startPosition, long endPosition )
         {

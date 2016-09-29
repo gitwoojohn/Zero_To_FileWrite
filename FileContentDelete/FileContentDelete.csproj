@@ -54,7 +54,7 @@
     <Prefer32Bit>true</Prefer32Bit>
   </PropertyGroup>
   <PropertyGroup>
-    <ApplicationIcon>1425925958x16.ico</ApplicationIcon>
+    <ApplicationIcon>developer.ico</ApplicationIcon>
   </PropertyGroup>
   <ItemGroup>
     <Reference Include="System" />
@@ -107,6 +107,8 @@
   <ItemGroup>
     <Content Include="1425925958x16.ico" />
     <Content Include="2280379084x16.ico" />
+    <Content Include="developer.ico" />
+    <Content Include="inside-icon.ico" />
   </ItemGroup>
   <Import Project="$(MSBuildToolsPath)\Microsoft.CSharp.targets" />
   <!-- To modify your build process, add your task inside one of the targets below and uncomment it. 
