@@ -51,7 +51,7 @@ namespace FileContentDelete
             for( int i = 0; i < listView.Items.Count; i++ )
             {
                 length = new FileInfo( listView.Items[ i ].Text ).Length;
-                if(  length <= 50000000 )
+                if( length <= 50000000 )
                 {
                     await ByteArrayToFile( listView.Items[ i ].Text );
                 }
@@ -92,10 +92,10 @@ namespace FileContentDelete
                 try
                 {
                     byte[] _ByteArray = new byte[ _FileStream.Length ];
-       
+
                     // 바이트 블록 단위로 파일 쓰기( 바이트 블록, 시작 위치, Write Size )
                     await _FileStream.WriteAsync( _ByteArray, 0, _ByteArray.Length );
-                    
+
                 }
                 catch( Exception e )
                 {
@@ -145,12 +145,16 @@ namespace FileContentDelete
                 // 리스트 뷰의 각 아이템
                 ListViewItem item = new ListViewItem( file );
 
+                long fileSize = new FileInfo( file ).Length;
+
+                item.SubItems.Add( ( fileSize / 1024 + 1 ).ToString( "#,#" ) ); //.ToString( "#,#" ) );
+
                 // 파일의 크기
-                using( FileStream fs = new FileStream( file, FileMode.Open ) )
-                {
-                    string fileSize = ( ( fs.Length / 1024 ) + 1 ).ToString( "#,#" );
-                    item.SubItems.Add( fileSize );
-                };
+                //using( FileStream fs = new FileStream( file, FileMode.Open ) )
+                //{
+                //    string fileSize = ( ( fs.Length / 1024 ) + 1 ).ToString( "#,#" );
+                //    item.SubItems.Add( fileSize );
+                //};
 
                 // 리스트 뷰에 아이템 입력
                 listView.Items.Add( item );
