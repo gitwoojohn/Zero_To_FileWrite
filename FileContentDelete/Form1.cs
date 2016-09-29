@@ -26,6 +26,8 @@ namespace FileContentDelete
             // Allow the user to select multiple images.
             openFileDialog.Multiselect = true;
             openFileDialog.Title = "파일 선택";
+
+            openFileDialog.FileName = string.Empty;
         }
 
         private void btnFileSelect_Click( object sender, EventArgs e )
@@ -45,18 +47,22 @@ namespace FileContentDelete
 
         private async void btnErase_Click( object sender, EventArgs e )
         {
-            long length = 0; //new FileInfo( filePath ).Length;
+            long length = 0;
 
             // 선택한 파일 삭제
             for( int i = 0; i < listView.Items.Count; i++ )
             {
                 length = new FileInfo( listView.Items[ i ].Text ).Length;
+
+
                 if( length <= 50000000 )
                 {
+                    // 500메가 이하
                     await ByteArrayToFile( listView.Items[ i ].Text );
                 }
                 else
                 {
+                    // 501 메가 이상 
                     await BinaryFileWrite( listView.Items[ i ].Text );
                 }
             }
@@ -70,17 +76,24 @@ namespace FileContentDelete
 
             using( FileStream streamWrite = File.OpenWrite( filePath ) )
             {
-                count = streamWrite.Length / blockSize;
-
-                for( int i = 0; i < count; i++ )
+                try
                 {
-                    await streamWrite.WriteAsync( data, 0, data.Length );
+                    count = streamWrite.Length / blockSize;
+
+                    for( int i = 0; i < count; i++ )
+                    {
+                        await streamWrite.WriteAsync( data, 0, data.Length );
+                    }
+
+                    if( streamWrite.Length > count * blockSize )
+                    {
+                        byte[] Last_Data = new byte[ streamWrite.Length - ( count * blockSize ) ];
+                        await streamWrite.WriteAsync( Last_Data, 0, Last_Data.Length );
+                    }
                 }
-
-                if( streamWrite.Length > count * blockSize )
+                catch( Exception e )
                 {
-                    byte[] Last_Data = new byte[ streamWrite.Length - ( count * blockSize ) ];
-                    await streamWrite.WriteAsync( Last_Data, 0, Last_Data.Length );
+                    MessageBox.Show( e.ToString() );
                 }
             }
         }
@@ -149,13 +162,6 @@ namespace FileContentDelete
 
                 item.SubItems.Add( ( fileSize / 1024 + 1 ).ToString( "#,#" ) ); //.ToString( "#,#" ) );
 
-                // 파일의 크기
-                //using( FileStream fs = new FileStream( file, FileMode.Open ) )
-                //{
-                //    string fileSize = ( ( fs.Length / 1024 ) + 1 ).ToString( "#,#" );
-                //    item.SubItems.Add( fileSize );
-                //};
-
                 // 리스트 뷰에 아이템 입력
                 listView.Items.Add( item );
             }
@@ -170,9 +176,8 @@ namespace FileContentDelete
 
             //}
 
-
-            long offset = 0; //0x00000000 * startPosition; // offset 0
-            long length = 1024; //0x20000000 * endPosition; // 512 megabytes
+            long offset = 0;
+            long length = 1024;
 
             // Create the memory-mapped file.
             using( var mmf = MemoryMappedFile.CreateFromFile( filePath, FileMode.Open, "ImgA" ) )
