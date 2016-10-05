@@ -4,7 +4,7 @@
   <PropertyGroup>
     <Configuration Condition=" '$(Configuration)' == '' ">Debug</Configuration>
     <Platform Condition=" '$(Platform)' == '' ">AnyCPU</Platform>
-    <ProjectGuid>{541B70DE-D50E-442F-A2AB-C6437B701EC8}</ProjectGuid>
+    <ProjectGuid>{CFE8D12B-B2F1-4358-8380-46C30C5B082E}</ProjectGuid>
     <OutputType>WinExe</OutputType>
     <AppDesignerFolder>Properties</AppDesignerFolder>
     <RootNamespace>FileContentDelete</RootNamespace>
@@ -105,6 +105,8 @@
     <None Include="App.config" />
   </ItemGroup>
   <ItemGroup>
+    <Content Include="1425925958x16.ico" />
+    <Content Include="2280379084x16.ico" />
     <Content Include="developer.ico" />
     <Content Include="inside-icon.ico" />
   </ItemGroup>

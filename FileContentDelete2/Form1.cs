@@ -12,11 +12,14 @@ namespace FileContentDelete
 {
     public partial class Form1 : Form
     {
+        List<string[]> filepaths = new List<string[]>();
+
         public Form1()
         {
             InitializeComponent();
             InitializeOpenFileDialog();
         }
+
         private void InitializeOpenFileDialog()
         {
             // Set the file dialog to filter for graphics files.
@@ -151,9 +154,28 @@ namespace FileContentDelete
 
         private void listView_DragEnter( object sender, DragEventArgs e )
         {
-            string[] files = ( string[] )e.Data.GetData( DataFormats.FileDrop );
+            string[] DragDropItems = ( string[] )e.Data.GetData( DataFormats.FileDrop );
 
-            ListView_AddFile( files );
+            string[] Dirs = Directory.GetDirectories( DragDropItems[0] );
+            string[] files = Directory.GetFiles( DragDropItems[ 0 ] );
+
+            if( e.Data.GetDataPresent( DataFormats.FileDrop ) )
+            {
+                var DragFileDropItem = ( ( string[] )e.Data.GetData( DataFormats.FileDrop ) )[ 0 ];
+                if( Directory.Exists( DragFileDropItem ) )
+                {
+                    string[] path = Directory.GetDirectories( DragFileDropItem );
+                    foreach( var item in path )
+                    {
+                        Debug.Write( item.ToString() );
+                    }
+                    //filepaths.Add( Directory.GetFiles( path ) ); // .AddRange( Directory.GetFiles( path ) );
+                }
+                else
+                {
+                    ListView_AddFile( files );
+                }
+            }
         }
 
         private void ListView_AddFile( string[] files )
