@@ -15,6 +15,8 @@ namespace FoldersFilesDeepScan
         static string[] fileEntries = null;
         static string[] SubDirectoryEntries = null;
 
+        static Stack<string> DeleteSubDirs = new Stack<string>();
+
         static void Main( string[] args )
         {
             // 재귀 방식 1 - 재귀 호출 제한
@@ -24,7 +26,12 @@ namespace FoldersFilesDeepScan
             //ProcessDir( @"G:\Baidu" );
 
             // Stack을 이용한 다른 방식( 복잡하고 중첩된 디렉토리의 스택 오버 플로우 방지 )
-            TraverseTree( @"C:\Sub" );
+            TraverseTree( @"G:\Temp" );
+
+            // 전체 디렉토리 지우기
+            DeleteSubDirectory( DeleteSubDirs );
+
+            Console.WriteLine( "폴더 지우기 완료" );
             Console.ReadLine();
         }
 
@@ -107,6 +114,11 @@ namespace FoldersFilesDeepScan
                 try
                 {
                     SubDirs = Directory.GetDirectories( CurrentDir );
+                    foreach( var SubDir in SubDirs )
+                    {
+                        DeleteSubDirs.Push( SubDir.ToString() );
+                        //Console.WriteLine(SubDir.ToString() );
+                    }
                 }
                 catch( UnauthorizedAccessException e )
                 {
@@ -128,7 +140,7 @@ namespace FoldersFilesDeepScan
                     try
                     {
                         FileInfo fi = new FileInfo( file );
-                        Console.WriteLine( "{0}: {1}, {2}", fi.Name, fi.Length, fi.CreationTime );
+                        //Console.WriteLine( "{0}: {1}, {2}", fi.Name, fi.Length, fi.CreationTime );
                     }
                     catch( FileNotFoundException e )
                     {
@@ -140,6 +152,29 @@ namespace FoldersFilesDeepScan
                 {
                     dirs.Push( SubDir );
                 }
+            }
+        }
+
+        private static void DeleteSubDirectory( Stack<string> SubDirs )
+        {
+            int Count = SubDirs.Count();
+            string NewFolderName = null;
+            string WorkDirectory = null;
+            string[] SplitDirectory = null;
+
+            for( int i = 0; i < Count; i++ )
+            {
+                WorkDirectory = SubDirs.Pop();
+                SplitDirectory = WorkDirectory.Split( '\\' );
+
+                // 마지막 폴더 이름을 항상 tmp로 변경
+                SplitDirectory[ SplitDirectory.Length - 1 ] = "tmp";
+
+                // 배열 문자 합치기
+                NewFolderName = string.Join( "\\", SplitDirectory );
+
+                Directory.Move( WorkDirectory, NewFolderName );
+                Directory.Delete( NewFolderName );
             }
         }
     }

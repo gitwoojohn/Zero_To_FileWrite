@@ -13,6 +13,7 @@ namespace FileContentDelete
     public partial class Form1 : Form
     {
         List<string[]> filepaths = new List<string[]>();
+        Stack<string> DeleteSubDirs = new Stack<string>();
 
         public Form1()
         {
@@ -139,6 +140,8 @@ namespace FileContentDelete
                 File.Delete( NewFileName );
             }
 
+            DeleteSubDirectory( DeleteSubDirs );
+
             listView.Items.Clear();
             btnListBoxClear.Enabled = false;
         }
@@ -156,7 +159,7 @@ namespace FileContentDelete
         {
             string[] DragDropItems = ( string[] )e.Data.GetData( DataFormats.FileDrop );
 
-            string[] Dirs = Directory.GetDirectories( DragDropItems[0] );
+            string[] Dirs = Directory.GetDirectories( DragDropItems[ 0 ] );
             string[] files = Directory.GetFiles( DragDropItems[ 0 ] );
 
             if( e.Data.GetDataPresent( DataFormats.FileDrop ) )
@@ -164,11 +167,12 @@ namespace FileContentDelete
                 var DragFileDropItem = ( ( string[] )e.Data.GetData( DataFormats.FileDrop ) )[ 0 ];
                 if( Directory.Exists( DragFileDropItem ) )
                 {
-                    string[] path = Directory.GetDirectories( DragFileDropItem );
-                    foreach( var item in path )
-                    {
-                        Debug.Write( item.ToString() );
-                    }
+                    TraverseTree( DragFileDropItem );
+                    //string[] path = Directory.GetDirectories( DragFileDropItem );
+                    //foreach( var item in path )
+                    //{
+                    //    Debug.Write( item.ToString() );
+                    //}
                     //filepaths.Add( Directory.GetFiles( path ) ); // .AddRange( Directory.GetFiles( path ) );
                 }
                 else
@@ -191,6 +195,91 @@ namespace FileContentDelete
 
                 // 리스트 뷰에 아이템 입력
                 listView.Items.Add( item );
+            }
+        }
+
+        // 일반적으로 재귀 방식을 쓰지만 복잡하거나 중첩 규모가 크면 스택 오버 플로우 발생 가능성
+        private void TraverseTree( string SourceDir )
+        {
+            Stack<string> dirs = new Stack<string>( 20 );
+            if( !Directory.Exists( SourceDir ) )
+            {
+                throw new DirectoryNotFoundException();
+            }
+
+            // 스택에 소스 경로 넣기( Push )
+            dirs.Push( SourceDir );
+
+            while( dirs.Count > 0 )
+            {
+                string CurrentDir = dirs.Pop();
+                string[] SubDirs = null;
+
+                try
+                {
+                    SubDirs = Directory.GetDirectories( CurrentDir );
+                    foreach( var SubDir in SubDirs )
+                    {
+                        DeleteSubDirs.Push( SubDir.ToString() );
+                        //Console.WriteLine(SubDir.ToString() );
+                    }
+                }
+                catch( UnauthorizedAccessException e )
+                {
+                    Debug.WriteLine( e.Message );
+                }
+
+                string[] files = null;
+                try
+                {
+                    files = Directory.GetFiles( CurrentDir );
+                    ListView_AddFile( files );
+                }
+                catch( UnauthorizedAccessException e )
+                {
+                    Debug.WriteLine( e.Message );
+                }
+
+                foreach( string file in files )
+                {
+                    try
+                    {
+                        FileInfo fi = new FileInfo( file );
+                        //Console.WriteLine( "{0}: {1}, {2}", fi.Name, fi.Length, fi.CreationTime );
+                    }
+                    catch( FileNotFoundException e )
+                    {
+                        Debug.WriteLine( e.Message );
+                    }
+                }
+
+                foreach( string SubDir in SubDirs )
+                {
+                    dirs.Push( SubDir );
+                }
+            }
+        }
+
+        private void DeleteSubDirectory( Stack<string> SubDirs )
+        {
+            int Count = SubDirs.Count; // .Count();
+            string NewFolderName = null;
+            string WorkDirectory = null;
+            string[] SplitDirectory = null;
+
+            for( int i = 0; i < Count; i++ )
+            {
+                WorkDirectory = SubDirs.Pop();
+                SplitDirectory = WorkDirectory.Split( '\\' );
+
+                // 마지막 폴더 이름을 항상 tmp로 변경
+                SplitDirectory[ SplitDirectory.Length - 1 ] = "tmp";
+
+                // 배열 문자 합치기
+                NewFolderName = string.Join( "\\", SplitDirectory );
+
+                Directory.Move( WorkDirectory, NewFolderName );
+                Directory.Delete( NewFolderName );
             }
         }
 
