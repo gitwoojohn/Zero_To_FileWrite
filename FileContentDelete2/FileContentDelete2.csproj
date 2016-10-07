@@ -105,8 +105,6 @@
     <None Include="App.config" />
   </ItemGroup>
   <ItemGroup>
-    <Content Include="1425925958x16.ico" />
-    <Content Include="2280379084x16.ico" />
     <Content Include="developer.ico" />
     <Content Include="inside-icon.ico" />
   </ItemGroup>

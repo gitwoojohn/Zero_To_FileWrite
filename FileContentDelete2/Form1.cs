@@ -12,7 +12,6 @@ namespace FileContentDelete
 {
     public partial class Form1 : Form
     {
-        List<string[]> filepaths = new List<string[]>();
         Stack<string> DeleteSubDirs = new Stack<string>();
 
         public Form1()
@@ -159,26 +158,16 @@ namespace FileContentDelete
         {
             string[] DragDropItems = ( string[] )e.Data.GetData( DataFormats.FileDrop );
 
-            string[] Dirs = Directory.GetDirectories( DragDropItems[ 0 ] );
-            string[] files = Directory.GetFiles( DragDropItems[ 0 ] );
-            //List<string> dirs = new List<string>( Directory.EnumerateDirectories( DragDropItems.ToString() ) );
-
             if( e.Data.GetDataPresent( DataFormats.FileDrop ) )
             {
                 var DragDropItem = ( ( string[] )e.Data.GetData( DataFormats.FileDrop ) )[ 0 ];
                 if( Directory.Exists( DragDropItem ) )
                 {
                     TraverseTree( DragDropItems );
-                    //string[] path = Directory.GetDirectories( DragFileDropItem );
-                    //foreach( var item in path )
-                    //{
-                    //    Debug.Write( item.ToString() );
-                    //}
-                    //filepaths.Add( Directory.GetFiles( path ) ); // .AddRange( Directory.GetFiles( path ) );
                 }
                 else
                 {
-                    ListView_AddFile( files );
+                    ListView_AddFile( DragDropItems );
                 }
             }
         }
@@ -202,28 +191,18 @@ namespace FileContentDelete
         // 일반적으로 재귀 방식을 쓰지만 복잡하거나 중첩 규모가 크면 스택 오버 플로우 발생 가능성
         private void TraverseTree( string[] SourceDirs )
         {
-            Stack<string> dirs = new Stack<string>( 20 );
-            //if( !Directory.Exists( SourceDir ) )
-            //{
-            //    throw new DirectoryNotFoundException();
-            //}
+            Stack<string> dirs = new Stack<string>( 30 );
 
             // 스택에 소스 경로 넣기( Push )
             foreach( var SourceDir in SourceDirs )
             {
                 dirs.Push( SourceDir );
-                //dirs.Push( SourceDir );
             }
-            
-            
 
             while( dirs.Count > 0 )
             {
                 string CurrentDir = dirs.Pop();
                 string[] SubDirs = null;
-
-                // 제일 상위 디렉토리를 삭제 할 때
-                // DeleteSubDirs.Push( CurrentDir );
 
                 try
                 {
@@ -231,7 +210,6 @@ namespace FileContentDelete
                     foreach( var SubDir in SubDirs )
                     {
                         DeleteSubDirs.Push( SubDir.ToString() );
-                        //Console.WriteLine(SubDir.ToString() );
                     }
                 }
                 catch( UnauthorizedAccessException e )
@@ -250,18 +228,18 @@ namespace FileContentDelete
                     Debug.WriteLine( e.Message );
                 }
 
-                foreach( string file in files )
-                {
-                    try
-                    {
-                        FileInfo fi = new FileInfo( file );
-                        //Console.WriteLine( "{0}: {1}, {2}", fi.Name, fi.Length, fi.CreationTime );
-                    }
-                    catch( FileNotFoundException e )
-                    {
-                        Debug.WriteLine( e.Message );
-                    }
-                }
+                //foreach( string file in files )
+                //{
+                //    try
+                //    {
+                //FileInfo fi = new FileInfo( file );
+                //Console.WriteLine( "{0}: {1}, {2}", fi.Name, fi.Length, fi.CreationTime );
+                //    }
+                //    catch( FileNotFoundException e )
+                //    {
+                //        Debug.WriteLine( e.Message );
+                //    }
+                //}
 
                 foreach( string SubDir in SubDirs )
                 {

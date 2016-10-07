@@ -26,12 +26,15 @@ namespace FoldersFilesDeepScan
             //ProcessDir( @"G:\Baidu" );
 
             // Stack을 이용한 다른 방식( 복잡하고 중첩된 디렉토리의 스택 오버 플로우 방지 )
-            TraverseTree( @"G:\Temp" );
+            //TraverseTree( @"G:\Temp" );
 
             // 전체 디렉토리 지우기
-            DeleteSubDirectory( DeleteSubDirs );
+            //DeleteSubDirectory( DeleteSubDirs );
 
-            Console.WriteLine( "폴더 지우기 완료" );
+            //Console.WriteLine( "폴더 지우기 완료" );
+
+
+            SimpleGetDirectory();
             Console.ReadLine();
         }
 
@@ -177,5 +180,29 @@ namespace FoldersFilesDeepScan
                 Directory.Delete( NewFolderName );
             }
         }
+
+        private static void SimpleGetDirectory()
+        {
+            try
+            {
+                string dirPath = @"C:\Temp";
+
+                List<string> dirs = new List<string>( Directory.EnumerateDirectories( dirPath ) );
+                foreach( var dir in dirs )
+                {
+                    Console.WriteLine( "{0}", dir.Substring( dir.LastIndexOf( "\\" ) + 1 ) );
+                }
+                Console.WriteLine( "{0} directories found.", dirs.Count );
+            }
+            catch( UnauthorizedAccessException UAEx )
+            {
+                Console.WriteLine( UAEx.Message );
+            }
+            catch( PathTooLongException PathEx )
+            {
+                Console.WriteLine( PathEx.Message );
+            }
+        }
+
     }
 }
