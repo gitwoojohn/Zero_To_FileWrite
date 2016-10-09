@@ -158,18 +158,45 @@ namespace FileContentDelete
         {
             string[] DragDropItems = ( string[] )e.Data.GetData( DataFormats.FileDrop );
 
-            if( e.Data.GetDataPresent( DataFormats.FileDrop ) )
+            List<string> DropFolder = new List<string>();
+            List<string> DropFile = new List<string>();
+
+            // 폴더와 파일을 동시에 드래그 했을 때
+            // 폴더와 파일을 각 각의 리스트에 담기.
+            foreach( var item in DragDropItems )
             {
-                var DragDropItem = ( ( string[] )e.Data.GetData( DataFormats.FileDrop ) )[ 0 ];
-                if( Directory.Exists( DragDropItem ) )
+                if( Directory.Exists( item.ToString() ) )
                 {
-                    TraverseTree( DragDropItems );
+                    DropFolder.Add( item.ToString() );
                 }
                 else
                 {
-                    ListView_AddFile( DragDropItems );
+                    DropFile.Add( item.ToString() );
                 }
             }
+
+            if( DropFolder != null )
+            {
+                TraverseTree( DropFolder.ToArray() );
+            }
+
+            if( DropFile != null )
+            {
+                ListView_AddFile( DropFile.ToArray() );
+            }
+
+            //if( e.Data.GetDataPresent( DataFormats.FileDrop ) )
+            //{
+            //    var DragDropItem = ( ( string[] )e.Data.GetData( DataFormats.FileDrop ) )[ 0 ];
+            //    if( Directory.Exists( DragDropItem ) )
+            //    {
+            //        TraverseTree( DragDropItems );
+            //    }
+            //    else
+            //    {
+            //        ListView_AddFile( DragDropItems );
+            //    }
+            //}
         }
 
         private void ListView_AddFile( string[] files )
@@ -203,6 +230,7 @@ namespace FileContentDelete
             {
                 string CurrentDir = dirs.Pop();
                 string[] SubDirs = null;
+                string[] files = null;
 
                 try
                 {
@@ -211,15 +239,6 @@ namespace FileContentDelete
                     {
                         DeleteSubDirs.Push( SubDir.ToString() );
                     }
-                }
-                catch( UnauthorizedAccessException e )
-                {
-                    Debug.WriteLine( e.Message );
-                }
-
-                string[] files = null;
-                try
-                {
                     files = Directory.GetFiles( CurrentDir );
                     ListView_AddFile( files );
                 }
@@ -227,6 +246,17 @@ namespace FileContentDelete
                 {
                     Debug.WriteLine( e.Message );
                 }
+
+
+                //try
+                //{
+                //    files = Directory.GetFiles( CurrentDir );
+                //    ListView_AddFile( files );
+                //}
+                //catch( UnauthorizedAccessException e )
+                //{
+                //    Debug.WriteLine( e.Message );
+                //}
 
                 //foreach( string file in files )
                 //{
@@ -240,7 +270,6 @@ namespace FileContentDelete
                 //        Debug.WriteLine( e.Message );
                 //    }
                 //}
-
                 foreach( string SubDir in SubDirs )
                 {
                     dirs.Push( SubDir );
