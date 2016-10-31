@@ -10,11 +10,11 @@ using System.Windows.Forms;
 
 namespace FileContentDelete
 {
-    public partial class Form1 : Form
+    public partial class Form : System.Windows.Forms.Form
     {
         Stack<string> DeleteSubDirs = new Stack<string>();
 
-        public Form1()
+        public Form()
         {
             InitializeComponent();
             InitializeOpenFileDialog();
@@ -31,7 +31,6 @@ namespace FileContentDelete
             openFileDialog.Title = "파일 선택";
 
             openFileDialog.FileName = string.Empty;
-
             btnListBoxClear.Enabled = false;
         }
 
@@ -63,20 +62,20 @@ namespace FileContentDelete
                 if( length <= 50000000 )
                 {
                     // 500메가 이하
-                    await ByteArrayToFile( listView.Items[ i ].Text );
+                    await ByteArrayWrite( listView.Items[ i ].Text );
                 }
                 else
                 {
                     // 501 메가 이상 
-                    await BinaryFileWrite( listView.Items[ i ].Text );
+                    await StreamFileWrite( listView.Items[ i ].Text );
                 }
             }
             btnListBoxClear.Enabled = true;
         }
 
-        private async Task BinaryFileWrite( string filePath )
+        private async Task StreamFileWrite( string filePath )
         {
-            const int blockSize = 1024 * 16; //8;
+            const int blockSize = 1024 * 8; //16; 
             byte[] data = new byte[ blockSize ];
             long count = 0;
 
@@ -104,16 +103,16 @@ namespace FileContentDelete
             }
         }
 
-        private async Task ByteArrayToFile( string _FileName )
+        private async Task ByteArrayWrite( string filename )
         {
-            using( FileStream _FileStream = new FileStream( _FileName, FileMode.Open, FileAccess.Write ) )
+            using( FileStream streamWrite = new FileStream( filename, FileMode.Open, FileAccess.Write ) )
             {
                 try
                 {
-                    byte[] _ByteArray = new byte[ _FileStream.Length ];
+                    byte[] _ByteArray = new byte[ streamWrite.Length ];
 
                     // 바이트 블록 단위로 파일 쓰기( 바이트 블록, 시작 위치, Write Size )
-                    await _FileStream.WriteAsync( _ByteArray, 0, _ByteArray.Length );
+                    await streamWrite.WriteAsync( _ByteArray, 0, _ByteArray.Length );
 
                 }
                 catch( Exception e )
@@ -210,6 +209,9 @@ namespace FileContentDelete
 
                 item.SubItems.Add( ( fileSize / 1024 + 1 ).ToString( "#,#" ) ); //.ToString( "#,#" ) );
 
+                // 각 파일의 속성을 일반 속성으로 변경
+                File.SetAttributes( file, FileAttributes.Normal );
+
                 // 리스트 뷰에 아이템 입력
                 listView.Items.Add( item );
             }
@@ -237,6 +239,10 @@ namespace FileContentDelete
                     SubDirs = Directory.GetDirectories( CurrentDir );
                     foreach( var SubDir in SubDirs )
                     {
+                        // 폴더 일반 속성으로 변경
+                        File.SetAttributes( SubDir, FileAttributes.Normal );
+
+                        // 스택에 폴더 넣기( 선입후출 - FILO )
                         DeleteSubDirs.Push( SubDir.ToString() );
                     }
                     files = Directory.GetFiles( CurrentDir );
@@ -279,7 +285,7 @@ namespace FileContentDelete
 
         private void DeleteSubDirectory( Stack<string> SubDirs )
         {
-            int Count = SubDirs.Count; // .Count();
+            int Count = SubDirs.Count;
             string NewFolderName = null;
             string WorkDirectory = null;
             string[] SplitDirectory = null;
@@ -346,6 +352,83 @@ namespace FileContentDelete
                 Green = ( short )Math.Min( short.MaxValue, Green + value );
                 Blue = ( short )Math.Min( short.MaxValue, Blue + value );
                 Alpha = ( short )Math.Min( short.MaxValue, Alpha + value );
+            }
+        }
+
+        private void listView_MouseClick( object sender, MouseEventArgs e )
+        {
+            if( e.Button == MouseButtons.Right )
+            {
+                //ContextMenuStrip.Show( Cursor.Position );
+                if( listView.FocusedItem.Bounds.Contains( e.Location ) == true )
+                {
+                    ContextMenuStrip.Show( Cursor.Position );
+                }
+            }
+
+            //if( e.Button == MouseButtons.Right )
+            //{
+            //    EventHandler ConTextMenuEvent = new EventHandler( ConTextMenu );
+            //    MenuItem[] ConTextMenuItem =
+            //    {
+            //        new MenuItem( "목록에서 삭제", ConTextMenuEvent ),
+            //        new MenuItem( "-", ConTextMenuEvent ),
+            //        new MenuItem( "파일 속성 변경", ConTextMenuEvent )
+            //    };
+            //    ContextMenu = new ContextMenu( ConTextMenuItem );
+
+            //}
+        }
+
+        // MenuItem를 사용한 방법 1
+        //private void ConTextMenu( object sender, EventArgs e )
+        //{
+        //    MenuItem ContextMenuItem = ( MenuItem )sender;
+        //    string MenuString = ContextMenuItem.Text;
+
+        //    switch( MenuString )
+        //    {
+        //        case "목록에서 삭제":
+        //            ListItemDelete();
+        //            break;
+        //        case "파일 속성 변경":
+        //            ListItemChangeAttribute();
+        //            break;
+        //        default:
+        //            break;
+        //    }
+        //}
+
+        private void ListItemDelete()
+        {
+            foreach( ListViewItem item in listView.SelectedItems )
+            {
+                item.Remove();
+            }
+        }
+
+        private void ListItemChangeAttribute()
+        {
+            foreach( ListViewItem item in listView.SelectedItems )
+            {
+                File.SetAttributes( item.Text, FileAttributes.Normal );
+            }
+        }
+
+        void ContextStripMenu_ItemClicked( object sender, ToolStripItemClickedEventArgs e )
+        {
+            ToolStripItem item = e.ClickedItem;
+
+            switch( item.Text )
+            {
+                case "선택 파일 삭제":
+                    ListItemDelete();
+                    break;
+                case "파일 속성 변경":
+                    ListItemChangeAttribute();
+                    break;
+                default:
+                    break;
             }
         }
     }

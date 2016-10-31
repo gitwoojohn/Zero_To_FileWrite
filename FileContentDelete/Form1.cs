@@ -220,5 +220,53 @@ namespace FileContentDelete
                 Alpha = ( short )Math.Min( short.MaxValue, Alpha + value );
             }
         }
+
+        private void listView_MouseClick( object sender, MouseEventArgs e )
+        {
+            if( e.Button == MouseButtons.Right )
+            {
+                EventHandler ConTextMenuEvent = new EventHandler( ConTextMenu );
+                MenuItem[] ConTextMenuItem = {
+                    new MenuItem( "목록에서 삭제", ConTextMenuEvent ),
+                    new MenuItem( "-", ConTextMenuEvent ),
+                    new MenuItem( "파일 속성 변경", ConTextMenuEvent )
+                };
+                ContextMenu = new ContextMenu( ConTextMenuItem );
+            }
+        }
+        private void ConTextMenu( object sender, EventArgs e )
+        {
+            MenuItem ContextMenuItem = ( MenuItem )sender;
+            String MenuString = ContextMenuItem.Text;
+
+            switch( MenuString )
+            {
+                case "목록에서 삭제":
+                    ListItemDelete();
+                    break;
+                case "파일 속성 변경":
+                    ListItemChangeAttribute();
+                    break;
+                default:
+                    Console.WriteLine( "Default case" );
+                    break;
+            }
+        }
+
+        private void ListItemDelete()
+        {
+            foreach( ListViewItem item in listView.SelectedItems )
+            {
+                item.Remove();
+            }
+        }
+
+        private void ListItemChangeAttribute()
+        {
+            foreach( ListViewItem item in listView.SelectedItems )
+            {
+                File.SetAttributes( item.Text, FileAttributes.Normal );
+            }
+        }
     }
 }
