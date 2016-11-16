@@ -27,6 +27,8 @@ Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "FileContentDelete2", "FileC
 EndProject
 Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "FoldersFilesDeepScan", "FoldersFilesDeepScan\FoldersFilesDeepScan.csproj", "{C730C632-4F03-4F7E-8E20-0826EAE5F5B5}"
 EndProject
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "AsyncProgressBar", "AsyncProgressBar\AsyncProgressBar.csproj", "{9500B2B8-100E-4945-B940-85384E8D8C68}"
+EndProject
 Global
 	GlobalSection(SolutionConfigurationPlatforms) = preSolution
 		Debug|Any CPU = Debug|Any CPU
@@ -131,6 +133,14 @@ Global
 		{C730C632-4F03-4F7E-8E20-0826EAE5F5B5}.Release|Any CPU.Build.0 = Release|Any CPU
 		{C730C632-4F03-4F7E-8E20-0826EAE5F5B5}.Release|x64.ActiveCfg = Release|Any CPU
 		{C730C632-4F03-4F7E-8E20-0826EAE5F5B5}.Release|x64.Build.0 = Release|Any CPU
+		{9500B2B8-100E-4945-B940-85384E8D8C68}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{9500B2B8-100E-4945-B940-85384E8D8C68}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{9500B2B8-100E-4945-B940-85384E8D8C68}.Debug|x64.ActiveCfg = Debug|Any CPU
+		{9500B2B8-100E-4945-B940-85384E8D8C68}.Debug|x64.Build.0 = Debug|Any CPU
+		{9500B2B8-100E-4945-B940-85384E8D8C68}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{9500B2B8-100E-4945-B940-85384E8D8C68}.Release|Any CPU.Build.0 = Release|Any CPU
+		{9500B2B8-100E-4945-B940-85384E8D8C68}.Release|x64.ActiveCfg = Release|Any CPU
+		{9500B2B8-100E-4945-B940-85384E8D8C68}.Release|x64.Build.0 = Release|Any CPU
 	EndGlobalSection
 	GlobalSection(SolutionProperties) = preSolution
 		HideSolutionNode = FALSE

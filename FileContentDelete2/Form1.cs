@@ -49,15 +49,61 @@ namespace FileContentDelete
             }
         }
 
-        private async void btnErase_Click( object sender, EventArgs e )
+        void ReportProgress( int value )
+        {
+            //Update the UI to reflect the progress value that is passed back.
+            progressBar.Value = value;
+        }
+
+        public async Task<int> DeleteFileAsync( int totalCount, IProgress<int> progress )
+        {
+            int tempCount = 1;
+            try
+            {
+                //processCount = await Task.Run( async () =>
+                //{
+                //    int tempCount = 0;
+                //    //await the processing and delete file logic here
+                //    for( int i = 0; i < totalCount; i++ )
+                //    {
+                //        //int processed = await DeleteFileProcess( tempCount );
+                //        await StreamFileWrite( listView.Items[ i ].Text );
+                //        if( progress != null )
+                //        {
+                //            progress.Report( ( tempCount * 100 / totalCount ) );
+                //        }
+                //        tempCount++;
+                //    }
+                //    return tempCount;
+                //} );
+
+                //await the processing and delete file logic here
+                for( int i = 0; i < totalCount; i++ )
+                {
+                    await StreamFileWrite( listView.Items[ i ].Text );
+                    if( progress != null )
+                    {
+                        progress.Report( ( tempCount * 100 / totalCount ) );
+                    }
+                    tempCount++;
+                }
+                return tempCount;
+            }
+
+            catch( Exception e )
+            {
+                Debug.Write( e.Message );
+            }
+            return tempCount;
+        }
+
+        private async Task<int> DeleteFileProcess( int i )
         {
             long length = 0;
 
-            // 선택한 파일 삭제
-            for( int i = 0; i < listView.Items.Count; i++ )
+            if( DeleteSubDirs.Count != 0 || listView.Items.Count != 0 )
             {
                 length = new FileInfo( listView.Items[ i ].Text ).Length;
-
 
                 if( length <= 50000000 )
                 {
@@ -69,8 +115,46 @@ namespace FileContentDelete
                     // 501 메가 이상 
                     await StreamFileWrite( listView.Items[ i ].Text );
                 }
+                btnListBoxClear.Enabled = true;
             }
+            return i;
+        }
+
+        //
+        private async void btnErase_Click( object sender, EventArgs e )
+        {
+            var progressIndicator = new Progress<int>( ReportProgress );
+            int progressDelete = await DeleteFileAsync( listView.Items.Count, progressIndicator );
+
             btnListBoxClear.Enabled = true;
+
+            //int progressDelete = await DeleteFileAsync( listView, new Progress<int>( percent => progressBar1.Value = percent ) );
+
+            //long length = 0;
+            //int totalCount = listView.Items.Count;
+
+            //if( DeleteSubDirs.Count != 0 || listView.Items.Count != 0 )
+            //{
+            //    // 선택한 파일 삭제
+            //    for( int i = 0; i < listView.Items.Count; i++ )
+            //    {
+            //        this.Text =  --totalCount + " 개 남음";
+
+            //        length = new FileInfo( listView.Items[ i ].Text ).Length;
+
+            //        if( length <= 50000000 )
+            //        {
+            //            // 500메가 이하
+            //            await ByteArrayWrite( listView.Items[ i ].Text );
+            //        }
+            //        else
+            //        {
+            //            // 501 메가 이상 
+            //            await StreamFileWrite( listView.Items[ i ].Text );
+            //        }
+            //    }
+            //    btnListBoxClear.Enabled = true;
+            //}
         }
 
         private async Task StreamFileWrite( string filePath )
@@ -242,7 +326,7 @@ namespace FileContentDelete
                         // 폴더 일반 속성으로 변경
                         File.SetAttributes( SubDir, FileAttributes.Normal );
 
-                        // 스택에 폴더 넣기( 선입후출 - FILO )
+                        // 스택에 폴더 넣기( 후입선출 - LIFO )
                         DeleteSubDirs.Push( SubDir.ToString() );
                     }
                     files = Directory.GetFiles( CurrentDir );
@@ -252,7 +336,6 @@ namespace FileContentDelete
                 {
                     Debug.WriteLine( e.Message );
                 }
-
 
                 //try
                 //{
