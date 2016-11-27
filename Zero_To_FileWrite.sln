@@ -29,6 +29,8 @@ Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "FoldersFilesDeepScan", "Fol
 EndProject
 Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "AsyncProgressBar", "AsyncProgressBar\AsyncProgressBar.csproj", "{9500B2B8-100E-4945-B940-85384E8D8C68}"
 EndProject
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "WPFTaskBarProgress", "WPFTaskBarProgress\WPFTaskBarProgress.csproj", "{3659BB4C-AD23-4357-B9D7-A4B3841BE9AE}"
+EndProject
 Global
 	GlobalSection(SolutionConfigurationPlatforms) = preSolution
 		Debug|Any CPU = Debug|Any CPU
@@ -141,6 +143,14 @@ Global
 		{9500B2B8-100E-4945-B940-85384E8D8C68}.Release|Any CPU.Build.0 = Release|Any CPU
 		{9500B2B8-100E-4945-B940-85384E8D8C68}.Release|x64.ActiveCfg = Release|Any CPU
 		{9500B2B8-100E-4945-B940-85384E8D8C68}.Release|x64.Build.0 = Release|Any CPU
+		{3659BB4C-AD23-4357-B9D7-A4B3841BE9AE}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{3659BB4C-AD23-4357-B9D7-A4B3841BE9AE}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{3659BB4C-AD23-4357-B9D7-A4B3841BE9AE}.Debug|x64.ActiveCfg = Debug|Any CPU
+		{3659BB4C-AD23-4357-B9D7-A4B3841BE9AE}.Debug|x64.Build.0 = Debug|Any CPU
+		{3659BB4C-AD23-4357-B9D7-A4B3841BE9AE}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{3659BB4C-AD23-4357-B9D7-A4B3841BE9AE}.Release|Any CPU.Build.0 = Release|Any CPU
+		{3659BB4C-AD23-4357-B9D7-A4B3841BE9AE}.Release|x64.ActiveCfg = Release|Any CPU
+		{3659BB4C-AD23-4357-B9D7-A4B3841BE9AE}.Release|x64.Build.0 = Release|Any CPU
 	EndGlobalSection
 	GlobalSection(SolutionProperties) = preSolution
 		HideSolutionNode = FALSE

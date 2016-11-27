@@ -1,0 +1,25 @@
+﻿<Window x:Class="WPFTaskBarProgress.MainWindow"
+        xmlns="http://schemas.microsoft.com/winfx/2006/xaml/presentation"
+        xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
+        xmlns:d="http://schemas.microsoft.com/expression/blend/2008"
+        xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006"
+        xmlns:local="clr-namespace:WPFTaskBarProgress"
+        mc:Ignorable="d"
+        Title="MainWindow" Height="270.519" Width="540.385">
+
+    <Window.TaskbarItemInfo>
+        <TaskbarItemInfo/>
+    </Window.TaskbarItemInfo>
+
+    <Grid Margin="0,0,0,1">
+        <Grid.RowDefinitions>
+            <RowDefinition Height="121*"/>
+            <RowDefinition Height="107*"/>
+            <RowDefinition Height="14*"/>
+        </Grid.RowDefinitions>
+        <StackPanel HorizontalAlignment="Center" VerticalAlignment="Center" Margin="6,12,6,98" Height="118" Width="520" Grid.RowSpan="2">
+            <ProgressBar Name="ProgressBar1" Margin="20,35,20,275" Height="44"/>
+        </StackPanel>
+        <Button x:Name="button" Content="시 작" Margin="186,14,186,21" RenderTransformOrigin="0.16,0.402" Click="button_Click" Grid.Row="1"/>
+    </Grid>
+</Window>
