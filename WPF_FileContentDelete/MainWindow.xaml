@@ -1,0 +1,85 @@
+﻿<Window x:Class="WPF_FileContentDelete.MainWindow"
+        x:Name="me"
+        xmlns="http://schemas.microsoft.com/winfx/2006/xaml/presentation"
+        xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
+        xmlns:d="http://schemas.microsoft.com/expression/blend/2008"
+        xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006"
+        xmlns:local="clr-namespace:WPF_FileContentDelete"
+        xmlns:ViewModels="clr-namespace:WPF_FileContentDelete.ViewModels"        
+        mc:Ignorable="d"
+        Icon="developer.ico"
+        Title="File Content Delete" Height="513" Width="458" ResizeMode="NoResize">
+    
+    <Window.Resources>
+        <ViewModels:ListViewDataSource x:Key="listViewDataSource" />
+    </Window.Resources>
+    <Window.TaskbarItemInfo>
+        <TaskbarItemInfo/>
+    </Window.TaskbarItemInfo>
+    <Grid>
+        <GroupBox Header="선택 파일 목록" HorizontalAlignment="Left" Margin="10,10,0,0" VerticalAlignment="Top" Height="350" Width="422">
+            <ListView x:Name="lstView" ItemsSource="{StaticResource listViewDataSource}" Drop="lstView_DragDrop" AllowDrop="True" ScrollViewer.HorizontalScrollBarVisibility="Disabled" > <!-- x:Name:"listView" -->
+                <ListView.View>
+                    <GridView AllowsColumnReorder="true" >
+                        <GridViewColumn DisplayMemberBinding="{Binding FilePath}" Header="파일 이름" Width="297"/>
+                        <GridViewColumn DisplayMemberBinding="{Binding FileSize}" Width="110">
+                            <GridViewColumn.Header>
+                                <GridViewColumnHeader Tag="FileSize" Click="lvUsersColumnHeader_Click">파일 크기</GridViewColumnHeader>
+                            </GridViewColumn.Header>
+                            <!--<GridViewColumnHeader>파일 크기
+                                <GridViewColumnHeader.ContextMenu>                                    
+                                    <ContextMenu  MenuItem.Click="FileSizeSorting_Click"  
+                                        Name="FileSizeSorting">
+                                        <MenuItem Header="Ascending" />
+                                        <MenuItem Header="Descending" />
+                                    </ContextMenu>
+                                </GridViewColumnHeader.ContextMenu>
+                            </GridViewColumnHeader>-->
+                        </GridViewColumn>
+                    </GridView>
+                </ListView.View>
+            </ListView>
+        </GroupBox>
+
+        <GroupBox Header="진행 상태" HorizontalAlignment="Left" Margin="10,365,0,0" VerticalAlignment="Top" Height="52" Width="422">
+            <ProgressBar x:Name="progressBar" Height="23">
+                
+            </ProgressBar>
+        </GroupBox>
+        <Label Margin="0,425,0,0" VerticalAlignment="Top" Height="0.5" Width="420" Background="Gray" />
+        <Button x:Name="button_Select" Content="파일 선택" HorizontalAlignment="Left" Margin="106,438,0,0" VerticalAlignment="Top" Width="92" Height="28" Click="button_Select_Click"/>
+        <Button x:Name="button_ZeroFill" Content="Zero Fill" HorizontalAlignment="Left" Margin="224,438,0,0" VerticalAlignment="Top" Width="92" Height="28" RenderTransformOrigin="1.859,0.571" Click="button_ZeroFill_Click"/>
+        <Button x:Name="button_Delete" Content="파일 삭제" HorizontalAlignment="Left" Margin="340,438,0,0" VerticalAlignment="Top" Width="92" Height="28" Click="button_Delete_Click"/>
+
+        <!-- Drag and Drop Popup -->
+        <Popup
+      x:Name="popup1"
+      IsHitTestVisible="False"
+      Placement="RelativePoint"
+      PlacementTarget="{Binding ElementName=me}"
+      AllowsTransparency="True">
+            <Border
+        BorderBrush="LightSteelBlue"
+        BorderThickness="2"
+        Background="White"
+        Opacity="0.75">
+                <StackPanel
+          Orientation="Horizontal"
+          Margin="4,3,8,3">
+                    <Image
+            Source="/DragInsert.png"
+            Width="16"
+            Height="16" />
+                    <TextBlock
+            FontSize="14"
+            FontWeight="Bold"
+            VerticalAlignment="Center"
+            Text="{Binding ElementName=me, Path=DraggedItem.Name}"
+            Margin="8,0,0,0" />
+                </StackPanel>
+            </Border>
+        </Popup>
+
+
+    </Grid>
+</Window>
