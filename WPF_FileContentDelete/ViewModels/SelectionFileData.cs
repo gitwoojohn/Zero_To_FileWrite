@@ -11,17 +11,12 @@ namespace WPF_FileContentDelete.ViewModels
 
         public string FilePath
         {
-            get
-            {
-                return _filePath;
-            }
+            get { return _filePath; }
         }
+
         public long FileSize
         {
-            get
-            {
-                return _fileSize;
-            }
+            get { return _fileSize; }
         }
 
         public override string ToString()

@@ -88,7 +88,10 @@ namespace WPF_FileContentDelete
 
             DeleteSubDirectory( DeleteSubDirs );
 
-            listView.Clear();
+            if( lstView.Items.Count >= 0 )
+            {
+                listView.Clear();
+            }
             button_Delete.IsEnabled = false;
         }
 
@@ -110,7 +113,7 @@ namespace WPF_FileContentDelete
             }
             catch( Exception e )
             {
-                Debug.Write( e.Message );
+                Debug.WriteLine( e.Message );
             }
 
             //int tempCount = 1;
@@ -212,18 +215,18 @@ namespace WPF_FileContentDelete
             {
                 try
                 {
-                    count = streamWrite.Length / blockSize;
+                    count = ( streamWrite.Length / blockSize ) + 1;
 
                     for( int i = 0; i < count; i++ )
                     {
                         await streamWrite.WriteAsync( data, 0, data.Length );
                     }
 
-                    if( streamWrite.Length > count * blockSize )
-                    {
-                        byte[] Last_Data = new byte[ streamWrite.Length - ( count * blockSize ) ];
-                        await streamWrite.WriteAsync( Last_Data, 0, Last_Data.Length );
-                    }
+                    //if( streamWrite.Length > count * blockSize )
+                    //{
+                    //    byte[] Last_Data = new byte[ streamWrite.Length - ( count * blockSize ) ];
+                    //    await streamWrite.WriteAsync( Last_Data, 0, Last_Data.Length );
+                    //}
                 }
                 catch( Exception e )
                 {
@@ -298,22 +301,9 @@ namespace WPF_FileContentDelete
             }
         }
 
-        private void FileSizeSorting_Click( object sender, RoutedEventArgs e )
-        {
-
-        }
-
         // 파일 드래그 앤 드랍 
         private void lstView_DragDrop( object sender, DragEventArgs e )
         {
-            //if( e.Data.GetDataPresent( DataFormats.FileDrop, true ) )
-            //{
-            //    e.Effects = DragDropEffects.Copy;
-            //}
-
-            //lstView.Items.Clear();
-
-
             if( e.Data.GetDataPresent( DataFormats.FileDrop ) )
             {
                 string[] DragDropItems = e.Data.GetData( DataFormats.FileDrop, true ) as string[];
@@ -345,7 +335,6 @@ namespace WPF_FileContentDelete
                     ListView_AddFile( DropFile.ToArray() );
                 }
             }
-
         }
 
         private void ListView_AddFile( string[] files )
@@ -358,6 +347,8 @@ namespace WPF_FileContentDelete
                 //ListViewDataSource listView = Resources[ "listViewDataSource" ] as ListViewDataSource;
                 listView = Resources[ "listViewDataSource" ] as ListViewDataSource;
 
+                // 파일 속성 변경
+                File.SetAttributes( file, FileAttributes.Normal );
                 listView.Add( new SelectionFileData( file, ( fileSize / 1024 + 1 ) ) ); //.ToString( "#,#" ) ) );                
             }
         }
@@ -393,23 +384,18 @@ namespace WPF_FileContentDelete
 
     }
 
-
-
     // 컬럼을 정렬하기 위해서 사용하는 클래스
     public class SortAdorner : Adorner
     {
-        private static Geometry ascGeometry =
-                Geometry.Parse( "M 0 4 L 3.5 0 L 7 4 Z" );
+        private static Geometry ascGeometry = Geometry.Parse( "M 0 4 L 3.5 0 L 7 4 Z" );
 
-        private static Geometry descGeometry =
-                Geometry.Parse( "M 0 0 L 3.5 4 L 7 0 Z" );
+        private static Geometry descGeometry = Geometry.Parse( "M 0 0 L 3.5 4 L 7 0 Z" );
 
         public ListSortDirection Direction { get; private set; }
 
-        public SortAdorner( UIElement element, ListSortDirection dir )
-                : base( element )
+        public SortAdorner( UIElement element, ListSortDirection dir ) : base( element )
         {
-            this.Direction = dir;
+            Direction = dir;
         }
 
         protected override void OnRender( DrawingContext drawingContext )
