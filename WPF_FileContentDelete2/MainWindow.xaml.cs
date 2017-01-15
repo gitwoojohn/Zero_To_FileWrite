@@ -91,7 +91,7 @@ namespace WPF_FileContentDelete
 
             if( listView.Items.Count >= 0 )
             {
-                listViewItem.Clear();
+                listView.Items.Clear();
             }
             button_Delete.IsEnabled = false;
         }
@@ -325,12 +325,12 @@ namespace WPF_FileContentDelete
                     }
                 }
 
-                if( DropFolder != null )
+                if( DropFolder.Count != 0 )
                 {
                     TraverseTree( DropFolder.ToArray() );
                 }
 
-                if( DropFile != null )
+                if( DropFile.Count != 0 )
                 {
                     ListView_AddFile( DropFile.ToArray() );
                 }
@@ -344,12 +344,11 @@ namespace WPF_FileContentDelete
                 // 리스트뷰 아이템 추가
                 long fileSize = new FileInfo( file ).Length;
 
-                //ListViewDataSource listView = Resources[ "listViewDataSource" ] as ListViewDataSource;
-                listViewItem = Resources[ "listViewDataSource" ] as ListViewDataSource;
-
                 // 파일 속성 변경
                 File.SetAttributes( file, FileAttributes.Normal );
-                listViewItem.Add( new SelectionFileData( file, ( fileSize / 1024 + 1 ) ) ); //.ToString( "#,#" ) ) );                
+
+                // 리스트 뷰 데이터 추가
+                listView.Items.Add( new SelectionFileData( file, ( fileSize / 1024 + 1 ) ) );
             }
         }
 
@@ -380,6 +379,24 @@ namespace WPF_FileContentDelete
             listViewSortAdorner = new SortAdorner( listViewSortCol, newDir );
             AdornerLayer.GetAdornerLayer( listViewSortCol ).Add( listViewSortAdorner );
             listView.Items.SortDescriptions.Add( new SortDescription( sortBy, newDir ) );
+        }
+
+        private void RemoveListItem_Click( object sender, RoutedEventArgs e )
+        {
+            // 단일 아이템
+            //listView.Items.Remove( listView.SelectedItem );
+
+            // 여러 아이템 ( 1개 이상의 아이템 선택시 선택된 아이템만 리스트에 추출 )
+            List<object> selectedItems = new List<object>();
+            foreach( var item in listView.SelectedItems )
+            {
+                selectedItems.Add( item );
+            }
+
+            foreach( var item in selectedItems )
+            {
+                listView.Items.Remove( item );
+            }
         }
     }
 

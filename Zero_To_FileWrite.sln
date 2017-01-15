@@ -33,6 +33,8 @@ Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "WPFTaskBarProgress", "WPFTa
 EndProject
 Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "WPF_FileContentDelete", "WPF_FileContentDelete\WPF_FileContentDelete.csproj", "{83B43BEB-3E8B-4E13-8DB0-E89E68FE37B6}"
 EndProject
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "WPF_FileContentDelete2", "WPF_FileContentDelete2\WPF_FileContentDelete2.csproj", "{6470F2FA-04D9-495B-AE5A-C4F459816303}"
+EndProject
 Global
 	GlobalSection(SolutionConfigurationPlatforms) = preSolution
 		Debug|Any CPU = Debug|Any CPU
@@ -285,6 +287,22 @@ Global
 		{83B43BEB-3E8B-4E13-8DB0-E89E68FE37B6}.Release|x64.Build.0 = Release|Any CPU
 		{83B43BEB-3E8B-4E13-8DB0-E89E68FE37B6}.Release|x86.ActiveCfg = Release|Any CPU
 		{83B43BEB-3E8B-4E13-8DB0-E89E68FE37B6}.Release|x86.Build.0 = Release|Any CPU
+		{6470F2FA-04D9-495B-AE5A-C4F459816303}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{6470F2FA-04D9-495B-AE5A-C4F459816303}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{6470F2FA-04D9-495B-AE5A-C4F459816303}.Debug|ARM.ActiveCfg = Debug|Any CPU
+		{6470F2FA-04D9-495B-AE5A-C4F459816303}.Debug|ARM.Build.0 = Debug|Any CPU
+		{6470F2FA-04D9-495B-AE5A-C4F459816303}.Debug|x64.ActiveCfg = Debug|Any CPU
+		{6470F2FA-04D9-495B-AE5A-C4F459816303}.Debug|x64.Build.0 = Debug|Any CPU
+		{6470F2FA-04D9-495B-AE5A-C4F459816303}.Debug|x86.ActiveCfg = Debug|Any CPU
+		{6470F2FA-04D9-495B-AE5A-C4F459816303}.Debug|x86.Build.0 = Debug|Any CPU
+		{6470F2FA-04D9-495B-AE5A-C4F459816303}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{6470F2FA-04D9-495B-AE5A-C4F459816303}.Release|Any CPU.Build.0 = Release|Any CPU
+		{6470F2FA-04D9-495B-AE5A-C4F459816303}.Release|ARM.ActiveCfg = Release|Any CPU
+		{6470F2FA-04D9-495B-AE5A-C4F459816303}.Release|ARM.Build.0 = Release|Any CPU
+		{6470F2FA-04D9-495B-AE5A-C4F459816303}.Release|x64.ActiveCfg = Release|Any CPU
+		{6470F2FA-04D9-495B-AE5A-C4F459816303}.Release|x64.Build.0 = Release|Any CPU
+		{6470F2FA-04D9-495B-AE5A-C4F459816303}.Release|x86.ActiveCfg = Release|Any CPU
+		{6470F2FA-04D9-495B-AE5A-C4F459816303}.Release|x86.Build.0 = Release|Any CPU
 	EndGlobalSection
 	GlobalSection(SolutionProperties) = preSolution
 		HideSolutionNode = FALSE
