@@ -3,11 +3,11 @@ using System.Collections.Generic;
 using System.ComponentModel;
 using System.Diagnostics;
 using System.IO;
+using System.Runtime;
 using System.Threading.Tasks;
 using System.Windows;
 using System.Windows.Controls;
 using System.Windows.Documents;
-using System.Windows.Input;
 using System.Windows.Media;
 using System.Windows.Shell;
 using Microsoft.Win32;
@@ -22,7 +22,6 @@ namespace WPF_FileContentDelete
     {
         Stack<string> DeleteSubDirs = new Stack<string>();
         OpenFileDialog openFileDialog = null;
-        ListViewDataSource listViewItem;
 
         private GridViewColumnHeader listViewSortCol = null;
         private SortAdorner listViewSortAdorner = null;
@@ -30,13 +29,13 @@ namespace WPF_FileContentDelete
         public MainWindow()
         {
             // 실행 성능 향상.
-            //ProfileOptimization.SetProfileRoot( @"..\..\" );
-            //ProfileOptimization.StartProfile( "profile" );
+            ProfileOptimization.SetProfileRoot( @"..\..\bin\Release" );
+            ProfileOptimization.StartProfile( "profile" );
 
             InitializeComponent();
             InitializeOpenFileDialog();
 
-            // 초기화 안해주면 진행바 먹통....
+            // 작업표시줄 진행바 ( 초기화 안해주면 진행바 작동 불가 )
             TaskbarItemInfo.ProgressState = TaskbarItemProgressState.Normal;
         }
 
@@ -44,7 +43,7 @@ namespace WPF_FileContentDelete
         {
             openFileDialog = new OpenFileDialog();
 
-            // Allow the user to select multiple images.
+            // 여러 파일 선택하기
             openFileDialog.Multiselect = true;
 
             // Set the file dialog to filter for All files.
@@ -355,7 +354,6 @@ namespace WPF_FileContentDelete
         // 진행바 갱신
         void ReportProgress( int value )
         {
-            //Update the UI to reflect the progress value that is passed back.
             progressBar.Value = value;
             TaskbarItemInfo.ProgressValue = ( double )value / 100;
         }
@@ -393,6 +391,7 @@ namespace WPF_FileContentDelete
                 selectedItems.Add( item );
             }
 
+            // 리스트뷰에서 선택된 파일만 삭제
             foreach( var item in selectedItems )
             {
                 listView.Items.Remove( item );
@@ -421,11 +420,11 @@ namespace WPF_FileContentDelete
             if( AdornedElement.RenderSize.Width < 20 )
                 return;
 
-            TranslateTransform transform = new TranslateTransform
-                    (
-                            AdornedElement.RenderSize.Width - 15,
-                            ( AdornedElement.RenderSize.Height - 5 ) / 2
-                    );
+            TranslateTransform transform =
+                new TranslateTransform(
+                AdornedElement.RenderSize.Width - 15,
+                ( AdornedElement.RenderSize.Height - 5 ) / 2 );
+
             drawingContext.PushTransform( transform );
 
             Geometry geometry = ascGeometry;
@@ -435,7 +434,6 @@ namespace WPF_FileContentDelete
 
             drawingContext.Pop();
         }
-
     }
 }
 
