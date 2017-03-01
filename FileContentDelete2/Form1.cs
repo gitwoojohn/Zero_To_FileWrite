@@ -81,6 +81,7 @@ namespace FileContentDelete
                 for( int i = 0; i < totalCount; i++ )
                 {
                     await StreamFileWrite( listView.Items[ i ].Text );
+                    //await ByteArrayWrite( listView.Items[ i ].Text );
                     if( progress != null )
                     {
                         progress.Report( ( tempCount * 100 / totalCount ) );
@@ -167,18 +168,18 @@ namespace FileContentDelete
             {
                 try
                 {
-                    count = streamWrite.Length / blockSize;
+                    count = ( streamWrite.Length / blockSize ) + 1;
 
                     for( int i = 0; i < count; i++ )
                     {
                         await streamWrite.WriteAsync( data, 0, data.Length );
                     }
 
-                    if( streamWrite.Length > count * blockSize )
-                    {
-                        byte[] Last_Data = new byte[ streamWrite.Length - ( count * blockSize ) ];
-                        await streamWrite.WriteAsync( Last_Data, 0, Last_Data.Length );
-                    }
+                    //if( streamWrite.Length > count * blockSize )
+                    //{
+                    //    byte[] Last_Data = new byte[ streamWrite.Length - ( count * blockSize ) ];
+                    //    await streamWrite.WriteAsync( Last_Data, 0, Last_Data.Length );
+                    //}
                 }
                 catch( Exception e )
                 {

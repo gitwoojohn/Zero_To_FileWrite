@@ -65,6 +65,7 @@ namespace WPF_FileContentDelete
 
         private async void button_ZeroFill_Click( object sender, RoutedEventArgs e )
         {
+            progressBar.Value = 0;
             var progressIndicator = new Progress<int>( ReportProgress );
             await DeleteFileAsync( listView.Items.Count, progressIndicator );
 
@@ -282,18 +283,19 @@ namespace WPF_FileContentDelete
             int Count = SubDirs.Count;
             string NewFolderName = null;
             string WorkDirectory = null;
-            string[] SplitDirectory = null;
+
+            string path = null;
 
             for( int i = 0; i < Count; i++ )
             {
+                // 전체 경로 스택에서 받기
                 WorkDirectory = SubDirs.Pop();
-                SplitDirectory = WorkDirectory.Split( '\\' );
 
-                // 마지막 폴더 이름을 항상 tmp로 변경
-                SplitDirectory[ SplitDirectory.Length - 1 ] = "tmp";
+                // 경로만 알아내기
+                path = Path.GetDirectoryName( WorkDirectory );
 
-                // 배열 문자 합치기
-                NewFolderName = string.Join( "\\", SplitDirectory );
+                // 변경할 폴더 이름
+                NewFolderName = path + "\\tmp";
 
                 Directory.Move( WorkDirectory, NewFolderName );
                 Directory.Delete( NewFolderName );
